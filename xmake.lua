@@ -17,7 +17,7 @@ target("EnchantUnbound")
 
     add_files("src/*.cpp", "niseAPI/deps/gamepwnage/src/*.c", "niseAPI/deps/gamepwnage/src/**/*.c")
 
-    add_includedirs("miniAPI/include", "niseAPI/include", "api/deps/gamepwnage/includes", {public = true})
+    add_includedirs("miniAPI/include", "niseAPI/include", "niseAPI/deps/gamepwnage/includes", {public = true})
 
     add_cxflags("-O2", "-fvisibility=hidden", "-ffunction-sections", "-fdata-sections", "-w")
     add_cflags("-O2", "-fvisibility=hidden", "-ffunction-sections", "-fdata-sections", "-w")

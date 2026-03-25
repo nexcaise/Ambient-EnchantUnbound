@@ -5,17 +5,61 @@
 #include <Gloss.h>
 #include <dlfcn.h>
 
-#include <miniAPI.h>
-
 #define LOG(...) __android_log_print(ANDROID_LOG_INFO, "EnchantLimitLess", __VA_ARGS__)
 
-miniAPI::Config& getConfig() {
-    static miniAPI::Config instance("EnchantLimitLess");
-    return instance;
+#include <fstream>
+#include <string>
+#include <filesystem>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
+struct Config {
+    bool crossenchant;
+    bool freedom;
+};
+
+void ensureDir(const std::string& path) {
+    std::filesystem::path p(path);
+    std::filesystem::create_directories(p.parent_path());
 }
 
-bool freedom;
-bool crossenchant;
+Config loadConfig(const std::string& path) {
+    ensureDir(path);
+
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        Config def{false, false};
+        json j;
+        j["crossenchant"] = def.crossenchant;
+        j["freedom"] = def.freedom;
+
+        std::ofstream out(path);
+        out << j.dump(4);
+        return def;
+    }
+
+    json j;
+    file >> j;
+
+    Config cfg;
+    cfg.crossenchant = j.value("crossenchant", false);
+    cfg.freedom = j.value("freedom", false);
+    return cfg;
+}
+
+void saveConfig(const std::string& path, const Config& cfg) {
+    ensureDir(path);
+
+    json j;
+    j["crossenchant"] = cfg.crossenchant;
+    j["freedom"] = cfg.freedom;
+
+    std::ofstream file(path);
+    file << j.dump(4);
+}
+
+Config modConfig;
 
 uintptr_t GetLibBase() {
     size_t textSize{};
@@ -26,7 +70,7 @@ uintptr_t GetLibBase() {
     return 0;
 }
 
-void (*old_Enchant_Setter)(void* self, unsigned char id, int rarity, void* src, size_t n, void* a6, size_t a7, int a8, void* srca, size_t na, int a11, int a12, int a13);
+void (*old_Enchant_Setter)(void*, unsigned char, int, void*, size_t, void*, size_t, int, void*, size_t, int, int, int);
 
 void hook_Enchant_Setter(void* self, unsigned char id, int rarity, void* src, size_t n, void* a6, size_t a7, int a8, void* srca, size_t na, int a11, int a12, int a13) {
     old_Enchant_Setter(self, id, rarity, src, n, a6, a7, a8, srca, na, a11, 0xFFFFFFFF, 0xFFFFFFFF);
@@ -88,11 +132,12 @@ uintptr_t FindSetterViaBackwalk(uintptr_t refAddr) {
 
 static int g_CompatibilityIDOffset{};
 
-// For Enchant::isCompatibleWith TridentChannelingEnchant::isCompatibleWith TridentRiptideEnchant::isCompatibleWith CrossbowEnchant::isCompatibleWith
 bool Enchant_isCompatibleWith(void* a1, uint8_t ID) {
-    if(freedom) return true;
+    bool freedom = modConfig.freedom;
+    if (freedom) return true;
+
     int CompatibilityID = *(int*)((uintptr_t)a1 + g_CompatibilityIDOffset);
-    //LOG("CompatibilityID=%d 1stAnvilSlot=%u", CompatibilityID, ID);
+
     if (CompatibilityID == 2 && (ID == 16 || ID == 18)) {
         if (ID == 16) LOG("Blocked Silk Touch + Fortune!");
         if (ID == 18) LOG("Blocked Fortune + Silk Touch!");
@@ -113,6 +158,7 @@ void HookCompatible() {
     uintptr_t drr = GlossGetLibSection("libminecraftpe.so", ".data.rel.ro", &drrSize);
     uintptr_t end = drr + drrSize;
     int replaced{};
+
     auto Redirect = [&](const char* sym, std::initializer_list<int> idx, uintptr_t hook) {
         void** vt = FindVtable(sym);
         if (!vt) {
@@ -131,53 +177,57 @@ void HookCompatible() {
             }
         }
     };
+
     if (void** vt = FindVtable("14MendingEnchant")) {
         uintptr_t func = (uintptr_t)vt[2];
         g_CompatibilityIDOffset = ((*(uint32_t*)func >> 10) & 0xFFF) * 4;
         Redirect("14MendingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     }
+
     Redirect("24TridentChannelingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("21TridentRiptideEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("15CrossbowEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+
     LOG("redirected %d vtable references", replaced);
 }
 
 void HookSetter() {
     LOG("Starting dynamic search...");
-    void** vtable = FindVtable("17ProtectionEnchant"); // 1. Locate ProtectionEnchant vtable
+
+    void** vtable = FindVtable("17ProtectionEnchant");
     if (!vtable) {
         LOG("ProtectionEnchant vtable not found!");
         return;
     }
-    uintptr_t ref = FindReference((uintptr_t)vtable); // 2. Find where it is used in the text section
+
+    uintptr_t ref = FindReference((uintptr_t)vtable);
     if (!ref) {
-        LOG("Reference to ProtectionEnchant not found!");
+        LOG("Reference not found!");
         return;
     }
-    uintptr_t setterAddr = FindSetterViaBackwalk(ref); // 3. Walk back to find the nearest BL (the setter function call)
+
+    uintptr_t setterAddr = FindSetterViaBackwalk(ref);
     if (!setterAddr) {
-        LOG("Could not find Setter call via backwalk.");
+        LOG("Setter not found!");
         return;
     }
-    LOG("Setter found at %p. Applying hook...", (void*)setterAddr);
+
+    LOG("Setter found at %p", (void*)setterAddr);
+
     GlossHook((void*)setterAddr, (void*)hook_Enchant_Setter, (void**)&old_Enchant_Setter);
-    LOG("Mod initialized successfully.");
+
+    LOG("Hook applied");
 }
 
 __attribute__((constructor))
 void init() {
     LOG("EnchantLimitLess Loaded");
 
-    auto& cfg = getConfig();
-
-    cfg.load("config.json");
-
-    freedom = cfg.get<bool>("freedom", false);
-    crossenchant = cfg.get<bool>("crossenchant", true);
-
-    cfg.set("freedom", freedom);
-    cfg.set("crossenchant", crossenchant);
+    modConfig = loadConfig("/sdcard/Android/media/io.kitsuri.mayape/modules_config/EnchantLimitLess/config.json");
 
     HookCompatible();
-    if (crossenchant) HookSetter();
+
+    if (modConfig.crossenchant) {
+        HookSetter();
+    }
 }

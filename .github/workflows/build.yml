@@ -1,4 +1,4 @@
-name: Build EnchantUnbound
+name: Build EnchantLimitLess
 
 on:
   workflow_dispatch:
@@ -39,5 +39,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: libEnchantUnbound
-          path: build/android/arm64-v8a/release/libEnchantUnbound.so
+          name: libEnchantLimitLess
+          path: build/android/arm64-v8a/release/libEnchantLimitLess.so

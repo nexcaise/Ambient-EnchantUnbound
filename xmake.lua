@@ -1,4 +1,4 @@
-set_project("EnchantUnbound")
+set_project("EnchantLimitLess")
 set_version("1.0.0")
 
 set_languages("cxx23")
@@ -9,8 +9,11 @@ add_repositories(
     "xmake-repo https://github.com/xmake-io/xmake-repo.git"
 )
 
-target("EnchantUnbound")
+add_requires("nlohmann_json v3.11.3")
+
+target("EnchantLimitLess")
     set_kind("shared")
+    add_packages("nlohmann_json")
     add_linkdirs("niseAPI/libs/arm64-v8a")
     add_linkdirs("miniAPI/libs/arm64-v8a")
     add_links("nise", "log", "miniAPI", "GlossHook")

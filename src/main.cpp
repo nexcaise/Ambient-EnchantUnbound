@@ -9,7 +9,10 @@
 
 #define LOG(...) __android_log_print(ANDROID_LOG_INFO, "EnchantLimitLess", __VA_ARGS__)
 
-miniAPI::Config cfg("EnchantLimitLess");
+miniAPI::Config& getConfig() {
+    static miniAPI::Config instance("EnchantLimitLess");
+    return instance;
+}
 
 bool freedom;
 bool crossenchant;
@@ -165,6 +168,8 @@ __attribute__((constructor))
 void init() {
     LOG("EnchantLimitLess Loaded");
 
+    auto& cfg = getConfig();
+
     cfg.load("config.json");
 
     freedom = cfg.get<bool>("freedom", false);
@@ -174,5 +179,5 @@ void init() {
     cfg.set("crossenchant", crossenchant);
 
     HookCompatible();
-    if(crossenchant) HookSetter();
+    if (crossenchant) HookSetter();
 }

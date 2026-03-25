@@ -11,8 +11,8 @@
 
 miniAPI::Config cfg("EnchantLimitLess");
 
-bool freedom = cfg.get<bool>("enchant.freedom", false);
-bool crossenchant = cfg.get<bool>("enchant.crossenchant", true);
+bool freedom = cfg.get<bool>("freedom", false);
+bool crossenchant = cfg.get<bool>("crossenchant", true);
 
 uintptr_t GetLibBase() {
     size_t textSize{};
@@ -166,8 +166,8 @@ void init() {
     LOG("EnchantLimitLess Loaded");
     cfg.load("config.json");
 
-    cfg.set("enchant.freedom", false);
-    cfg.set("enchant.crossenchant", true);
+    cfg.set("freedom", freedom);
+    cfg.set("crossenchant", crossenchant);
     HookCompatible();
     if(crossenchant) HookSetter();
 }

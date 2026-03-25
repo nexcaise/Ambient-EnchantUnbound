@@ -1,6 +1,7 @@
 name: Build EnchantLimitLess
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:

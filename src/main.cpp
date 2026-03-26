@@ -2,7 +2,7 @@
 #include <cstring>
 #include <android/log.h>
 #include <dlfcn.h>
-#include "pl/Gloss.h"
+#include <Gloss.h>
 
 #define LOG(...) __android_log_print(ANDROID_LOG_INFO, "LimitlessGlint", __VA_ARGS__)
 

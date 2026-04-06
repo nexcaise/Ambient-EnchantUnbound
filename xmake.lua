@@ -14,6 +14,7 @@ add_requires("nlohmann_json v3.11.3")
 
 target("EnchantUnbound")
     set_kind("shared")
+    add_packages("nlohmann_json")
     add_files("src/main.cpp")
     add_linkdirs("libs/arm64-v8a")
     add_links("log", "android", "dl")

@@ -4,9 +4,9 @@
 #include <nc/api/Game.h>
 #include <nc/api/Config.h>
 #include <nc/Gloss.h>
-#include <nc/api/Logger.h>
+//#include <nc/api/Logger.h>
 
-auto logger_eu = nc::Logger::getOrCreate("EnchantUnbound");
+//auto logger_eu = nc::Logger::getOrCreate("EnchantUnbound");
 
 Config& getConfig() {
     static Config cfg("EnchantUnbound", false);
@@ -24,15 +24,15 @@ bool Enchant_isCompatibleWith(void* a1, uint8_t ID) {
     int CompatibilityID = *(int*)((uintptr_t)a1 + g_CompatibilityIDOffset);
     //logger_eu->i("CompatibilityID=%d 1stAnvilSlot=%u", CompatibilityID, ID);
     if (CompatibilityID == 2 && (ID == 16 || ID == 18)) {
-        if (ID == 16) logger_eu->i("Blocked Silk Touch + Fortune!");
-        if (ID == 18) logger_eu->i("Blocked Fortune + Silk Touch!");
+        //if (ID == 16) logger_eu->i("Blocked Silk Touch + Fortune!");
+        //if (ID == 18) logger_eu->i("Blocked Fortune + Silk Touch!");
         return false;
     }
     if ((CompatibilityID == 0 || CompatibilityID == 6) && (ID == 30 || ID == 31 || ID == 32)) {
-        if (CompatibilityID == 0 && ID == 30) logger_eu->i("Blocked Riptide + Channeling!");
-        if (CompatibilityID == 6 && ID == 32) logger_eu->i("Blocked Channeling + Riptide!");
-        if (CompatibilityID == 6 && ID == 30) logger_eu->i("Blocked Riptide + Loyalty!");
-        if (CompatibilityID == 6 && ID == 31) logger_eu->i("Blocked Loyalty + Riptide!");
+        //if (CompatibilityID == 0 && ID == 30) logger_eu->i("Blocked Riptide + Channeling!");
+        //if (CompatibilityID == 6 && ID == 32) logger_eu->i("Blocked Channeling + Riptide!");
+        //if (CompatibilityID == 6 && ID == 30) logger_eu->i("Blocked Riptide + Loyalty!");
+        //if (CompatibilityID == 6 && ID == 31) logger_eu->i("Blocked Loyalty + Riptide!");
         return false;
     }
     return true;
@@ -66,21 +66,21 @@ static int (*originMax)(void*) = nullptr;
 
 int enchantCost_min(void* self, int level) {
 	int originalVal = origin_ec_min(self, level);
-	logger_eu->i("Level Min Enchant = {}", level);
-	logger_eu->i("Cost Min Enchant = {}", originalVal);
+	//logger_eu->i("Level Min Enchant = {}", level);
+	//logger_eu->i("Cost Min Enchant = {}", originalVal);
 	return originalVal;
 }
 
 int enchantCost_max(void* self, int level) {
 	int originalVal = origin_ec_max(self, level);
-	logger_eu->i("Level Max Enchant = {}", level);
-	logger_eu->i("Cost Max Enchant = {}", originalVal);
+	//logger_eu->i("Level Max Enchant = {}", level);
+	//logger_eu->i("Cost Max Enchant = {}", originalVal);
 	return originalVal;
 }
 
 int enchantMax(void* self) {
 	int originalVal = originMax(self);
-	logger_eu->i("Max Enchant = {}", originalVal);
+	//logger_eu->i("Max Enchant = {}", originalVal);
 	return originalVal;
 }
 
@@ -190,7 +190,7 @@ void HookCompatible() {
     auto Redirect = [&](const char* sym, std::initializer_list<int> idx, uintptr_t hook) {
         void** vt = FindVtable(sym);
         if (!vt) {
-            logger_eu->i("%s not found", sym);
+            //logger_eu->i("%s not found", sym);
             return;
         }
         for (int i : idx) {
@@ -213,12 +213,12 @@ void HookCompatible() {
     Redirect("24TridentChannelingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("21TridentRiptideEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("15CrossbowEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
-    logger_eu->i("redirected %d vtable references", replaced);
+    //logger_eu->i("redirected %d vtable references", replaced);
 }
 
 __attribute__((constructor))
 void init() {
-    logger_eu->i("EnchantUnbound Loaded");
+    //logger_eu->i("EnchantUnbound Loaded");
     Config& cfg = getConfig();
     cfg.open("config.json");
     bool freedom = cfg.get<bool>("enchantment.freedom", false);

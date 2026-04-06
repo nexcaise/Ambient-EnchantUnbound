@@ -1,7 +1,6 @@
 #include <cstdint>
 #include <cstring>
 #include <initializer_list>
-#include <android/logger_eu->i.h>
 #include <nc/api/Game.h>
 #include <nc/api/Config.h>
 #include <nc/Gloss.h>

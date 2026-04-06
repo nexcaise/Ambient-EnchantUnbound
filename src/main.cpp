@@ -8,16 +8,11 @@
 
 //auto logger_eu = nc::Logger::getOrCreate("EnchantUnbound");
 
-Config& getConfig() {
-    static Config cfg("EnchantUnbound", false);
-    return cfg;
-}
-
 static int g_CompatibilityIDOffset{};
 
 // For Enchant::isCompatibleWith TridentChannelingEnchant::isCompatibleWith TridentRiptideEnchant::isCompatibleWith CrossbowEnchant::isCompatibleWith
 bool Enchant_isCompatibleWith(void* a1, uint8_t ID) {
-	Config& cfg = getConfig();
+	Config cfg("EnchantUnbound", false);
     cfg.open("config.json");
     bool freedom = cfg.get<bool>("enchantment.freedom", false);
     if(freedom) return true;
@@ -218,8 +213,9 @@ void HookCompatible() {
 
 __attribute__((constructor))
 void init() {
+	GlossInit(true);
     //logger_eu->i("EnchantUnbound Loaded");
-    Config& cfg = getConfig();
+    Config cfg("EnchantUnbound", false);
     cfg.open("config.json");
     bool freedom = cfg.get<bool>("enchantment.freedom", false);
     cfg.set("enchantment.freedom", freedom);

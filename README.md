@@ -1,4 +1,4 @@
-# ✨ EnchantUnbound
+# ✨ EnchantLimitLess
 
 A lightweight mod that breaks the vanilla barriers, allowing you to create the ultimate god-tier gear. No more choosing between power and utility—have it all.
 
@@ -10,6 +10,8 @@ A lightweight mod that breaks the vanilla barriers, allowing you to create the u
 * **The God Table:** Enchantment tables now grant these "conflicting" combos naturally.
 * **Perfect Bows:** Run **Mending** and **Infinity** together for infinite power that never breaks.
 * **True Crossbows:** Combine **Piercing** and **Multishot** for ultimate crowd control.
+
+* **Customizeable Max Level and Cost Enchant**
 
 ---
 
@@ -27,13 +29,13 @@ While you *can* put these together now, some enchants just don't work side-by-si
 ---
 
 ### ⚙️ Total Freedom
-If you prefer to have absolutely no restrictions at all—even for the combinations listed above—you can fork the mod and modify `Enchant_isCompatibleWith` in the main.cpp like this :
 
-```c
-bool Enchant_isCompatibleWith(void* a1, uint8_t ID) {
-    return true;
-}
+* **Configure the feature at:**
 ```
+/storage/emulated/0/Android/media/{ambient package}/modules/EnchantLimitLess/config.json
+```
+
+change the enchantment.freedom to true
 
 ## ⚙️ Requirements
 
@@ -41,8 +43,8 @@ bool Enchant_isCompatibleWith(void* a1, uint8_t ID) {
 
 ## 🛠️ Installation
 
-- Install LeviLauncher
-- Import AnarchyArray mod in LeviLauncher by doing "Manage Mods > Add Mod"
+- Install Ambient
+- Import EnchantLimitLess mod in Ambient by doing "Manage Mods > Add Mod"
 - Launch Minecraft with the mod activated
 
 ## 📜 License

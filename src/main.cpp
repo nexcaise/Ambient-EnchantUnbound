@@ -9,7 +9,7 @@
 static int g_CompatibilityIDOffset{};
 
 bool Enchant_isCompatibleWith(void* a1, uint8_t ID) {
-	Config cfg("EnchantUnbound", false);
+	Config cfg("EnchantLimitLess", false);
     cfg.open("config.json");
     bool freedom = cfg.get<bool>("enchantment.freedom", false);
     if(freedom) return true;
@@ -45,22 +45,22 @@ static int (*origin_ec_min)(void*, int) = nullptr;
 static int (*origin_ec_max)(void*, int) = nullptr;
 static int (*originMax)(void*) = nullptr;
 
-int enchantCost_min(void* self, int level) {
-	Config cfg("EnchantUnbound", false);
+int enchantCost_min(void* self, int lvl) {
+	Config cfg("EnchantLimitLess", false);
     cfg.open("config.json");
     int level = cfg.get<int>("enchantment.min_cost", 0);
 	return level;
 }
 
-int enchantCost_max(void* self, int level) {
-	Config cfg("EnchantUnbound", false);
+int enchantCost_max(void* self, int lvl) {
+	Config cfg("EnchantLimitLess", false);
     cfg.open("config.json");
     int level = cfg.get<int>("enchantment.max_cost", 0);
 	return level;
 }
 
 int enchantMax(void* self) {
-	Config cfg("EnchantUnbound", false);
+	Config cfg("EnchantLimitLess", false);
     cfg.open("config.json");
     int level = cfg.get<int>("enchantment.max_level", 9);
 	return level;
@@ -274,7 +274,7 @@ NAPI void HookLimitLess() {
 __attribute__((constructor))
 void init() {
 	GlossInit(true);
-    Config cfg("EnchantUnbound", false);
+    Config cfg("EnchantLimitLess", false);
     cfg.open("config.json");
     int ad = cfg.get<int>("enchantment.max_level", 9);
     cfg.set("enchantment.max_level", ad);

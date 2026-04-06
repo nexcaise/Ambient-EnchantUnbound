@@ -1,4 +1,4 @@
-set_project("EnchantUnbound")
+set_project("EnchantLimitLess")
 set_version("1.0.0")
 
 set_languages("cxx23")
@@ -9,7 +9,7 @@ add_repositories("xmake-repo https://github.com/xmake-io/xmake-repo.git")
 
 add_requires("nlohmann_json v3.11.3")
 
-target("EnchantUnbound")
+target("EnchantLimitLess")
     set_kind("shared")
     add_packages("nlohmann_json")
     add_files("src/*.cpp", "src/**/*.cpp")

@@ -60,23 +60,24 @@ static int (*origin_ec_max)(void*, int) = nullptr;
 static int (*originMax)(void*) = nullptr;
 
 int enchantCost_min(void* self, int level) {
-	int originalVal = origin_ec_min(self, level);
-	//logger_eu->i("Level Min Enchant = {}", level);
-	//logger_eu->i("Cost Min Enchant = {}", originalVal);
-	return 0;
+	Config cfg("EnchantUnbound", false);
+    cfg.open("config.json");
+    int level = cfg.get<int>("enchantment.min_cost", 0);
+	return level;
 }
 
 int enchantCost_max(void* self, int level) {
-	int originalVal = origin_ec_max(self, level);
-	//logger_eu->i("Level Max Enchant = {}", level);
-	//logger_eu->i("Cost Max Enchant = {}", originalVal);
-	return 0;
+	Config cfg("EnchantUnbound", false);
+    cfg.open("config.json");
+    int level = cfg.get<int>("enchantment.max_cost", 0);
+	return level;
 }
 
 int enchantMax(void* self) {
-	int originalVal = originMax(self);
-	//logger_eu->i("Max Enchant = {}", originalVal);
-	return 255;
+	Config cfg("EnchantUnbound", false);
+    cfg.open("config.json");
+    int level = cfg.get<int>("enchantment.max_level", 9);
+	return level;
 }
 
 bool vHook(const char* MCPE_LIB, const char* cls, int slot, void* hookFn, void** orig) {
@@ -237,6 +238,12 @@ void init() {
     //logger_eu->i("EnchantUnbound Loaded");
     Config cfg("EnchantUnbound", false);
     cfg.open("config.json");
+    int ad = cfg.get<int>("enchantment.max_level", 9);
+    cfg.set("enchantment.max_level", ad);
+    int as = cfg.get<int>("enchantment.min_cost", 0);
+    cfg.set("enchantment.min_cost", as);
+    int aq = cfg.get<int>("enchantment.max_cost", 0);
+    cfg.set("enchantment.max_cost", aq);
     bool freedom = cfg.get<bool>("enchantment.freedom", false);
     cfg.set("enchantment.freedom", freedom);
     HookCompatible();

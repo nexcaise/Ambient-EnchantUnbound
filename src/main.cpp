@@ -1,39 +1,25 @@
 #include <cstdint>
 #include <cstring>
+#include <dlfcn.h>
 #include <initializer_list>
 #include <nc/api/Game.h>
 #include <nc/api/Config.h>
 #include <nc/Gloss.h>
-//#include <nc/api/Logger.h>
-
-//auto logger_eu = nc::Logger::getOrCreate("EnchantUnbound");
 
 static int g_CompatibilityIDOffset{};
 
-// For Enchant::isCompatibleWith TridentChannelingEnchant::isCompatibleWith TridentRiptideEnchant::isCompatibleWith CrossbowEnchant::isCompatibleWith
 bool Enchant_isCompatibleWith(void* a1, uint8_t ID) {
 	Config cfg("EnchantUnbound", false);
     cfg.open("config.json");
     bool freedom = cfg.get<bool>("enchantment.freedom", false);
     if(freedom) return true;
     int CompatibilityID = *(int*)((uintptr_t)a1 + g_CompatibilityIDOffset);
-    //logger_eu->i("CompatibilityID=%d 1stAnvilSlot=%u", CompatibilityID, ID);
-    if (CompatibilityID == 2 && (ID == 16 || ID == 18)) {
-        //if (ID == 16) logger_eu->i("Blocked Silk Touch + Fortune!");
-        //if (ID == 18) logger_eu->i("Blocked Fortune + Silk Touch!");
-        return false;
-    }
-    if ((CompatibilityID == 0 || CompatibilityID == 6) && (ID == 30 || ID == 31 || ID == 32)) {
-        //if (CompatibilityID == 0 && ID == 30) logger_eu->i("Blocked Riptide + Channeling!");
-        //if (CompatibilityID == 6 && ID == 32) logger_eu->i("Blocked Channeling + Riptide!");
-        //if (CompatibilityID == 6 && ID == 30) logger_eu->i("Blocked Riptide + Loyalty!");
-        //if (CompatibilityID == 6 && ID == 31) logger_eu->i("Blocked Loyalty + Riptide!");
-        return false;
-    }
+    if (CompatibilityID == 2 && (ID == 16 || ID == 18)) return false;
+    if ((CompatibilityID == 0 || CompatibilityID == 6) && (ID == 30 || ID == 31 || ID == 32)) return false;
     return true;
 }
 
-void** FindVtable(const char* cls) {
+NAPI void** FindVtable(const char* cls) {
     static uintptr_t rodata{}, drr{};
     static size_t rodataSize{}, drrSize{};
     if (!rodata) {
@@ -80,11 +66,11 @@ int enchantMax(void* self) {
 	return level;
 }
 
-bool vHook(const char* MCPE_LIB, const char* cls, int slot, void* hookFn, void** orig) {
+NAPI bool vHook(const char* MCPE_LIB, const char* cls, int slot, void* hookFn, void** orig) {
 	return nc::hook::vtable(MCPE_LIB, cls, slot, orig, hookFn);
 }
 
-void HookCostAndMaxVal() {
+NAPI void HookCostAndMaxVal() {
 	vHook("libminecraftpe.so", "7Enchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min); //MinCost
 	vHook("libminecraftpe.so", "7Enchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max); //MaxCost
 	vHook("libminecraftpe.so", "7Enchant", 6, (void*)enchantMax, (void**)&originMax); //MaxLevel
@@ -178,17 +164,14 @@ void HookCostAndMaxVal() {
     vHook("libminecraftpe.so", "16WindBurstEnchant", 6, (void*)enchantMax, (void**)&originMax);
 }
 
-void HookCompatible() {
+NAPI void HookCompatible() {
     size_t drrSize{};
     uintptr_t drr = GlossGetLibSection("libminecraftpe.so", ".data.rel.ro", &drrSize);
     uintptr_t end = drr + drrSize;
     int replaced{};
     auto Redirect = [&](const char* sym, std::initializer_list<int> idx, uintptr_t hook) {
         void** vt = FindVtable(sym);
-        if (!vt) {
-            //logger_eu->i("%s not found", sym);
-            return;
-        }
+        if (!vt) return;
         for (int i : idx) {
             uintptr_t func = (uintptr_t)vt[i];
             for (uintptr_t p = drr; p < end; p += sizeof(uintptr_t)) {
@@ -229,13 +212,68 @@ void HookCompatible() {
     Redirect("12LungeEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("18MeleeWeaponEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("17ProtectionEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
-    //logger_eu->i("redirected %d vtable references", replaced);
+}
+
+uintptr_t GetLibBase() {
+    size_t textSize{};
+    uintptr_t text = GlossGetLibSection("libminecraftpe.so", ".text", &textSize);
+    Dl_info info{};
+    if (dladdr((void*)text, &info))
+        return (uintptr_t)info.dli_fbase;
+    return 0;
+}
+
+void (*old_Enchant_Setter)(void* self, unsigned char id, int rarity, void* src, size_t n, void* a6, size_t a7, int a8, void* srca, size_t na, int a11, int a12, int a13);
+
+void hook_Enchant_Setter(void* self, unsigned char id, int rarity, void* src, size_t n, void* a6, size_t a7, int a8, void* srca, size_t na, int a11, int a12, int a13) {
+    old_Enchant_Setter(self, id, rarity, src, n, a6, a7, a8, srca, na, a11, 0xFFFFFFFF, 0xFFFFFFFF);
+}
+
+NAPI uintptr_t FindReference(uintptr_t target) {
+    size_t textSize{};
+    uintptr_t text = GlossGetLibSection("libminecraftpe.so", ".text", &textSize);
+    for (uintptr_t p = text; p < text + textSize - 8; p += 4) {
+        uint32_t adrp = *(uint32_t*)p;
+        uint32_t add  = *(uint32_t*)(p + 4);
+        if ((adrp & 0x9F000000) != 0x90000000) continue;
+        if ((add & 0xFF000000) != 0x91000000) continue;
+        int reg = adrp & 0x1F;
+        if (((add >> 5) & 0x1F) != reg) continue;
+        int64_t immhi = (adrp >> 5) & 0x7FFFF;
+        int64_t immlo = (adrp >> 29) & 3;
+        int64_t page  = ((immhi << 2) | immlo) << 12;
+        uintptr_t pageAddr = (p & ~0xFFFULL) + page;
+        int64_t off = (add >> 10) & 0xFFF;
+        uintptr_t resolved = pageAddr + off;
+        if (resolved == target) return p;
+    }
+    return 0;
+}
+
+NAPI uintptr_t FindSetterViaBackwalk(uintptr_t refAddr) {
+    for (uintptr_t p = refAddr - 4; p > refAddr - 40; p -= 4) {
+        uint32_t ins = *(uint32_t*)p;
+        if ((ins & 0xFC000000) == 0x94000000) {
+            int32_t imm26 = (int32_t)(ins << 6) >> 6;
+            return p + (imm26 * 4);
+        }
+    }
+    return 0;
+}
+
+NAPI void HookLimitLess() {
+    void** vtable = FindVtable("17ProtectionEnchant");
+    if (!vtable) return;
+    uintptr_t ref = FindReference((uintptr_t)vtable);
+    if (!ref) return;
+    uintptr_t setterAddr = FindSetterViaBackwalk(ref);
+    if (!setterAddr) return;
+    GlossHook((void*)setterAddr, (void*)hook_Enchant_Setter, (void**)&old_Enchant_Setter);
 }
 
 __attribute__((constructor))
 void init() {
 	GlossInit(true);
-    //logger_eu->i("EnchantUnbound Loaded");
     Config cfg("EnchantUnbound", false);
     cfg.open("config.json");
     int ad = cfg.get<int>("enchantment.max_level", 9);
@@ -248,4 +286,8 @@ void init() {
     cfg.set("enchantment.freedom", freedom);
     HookCompatible();
     HookCostAndMaxVal();
+    bool limitless = cfg.get<bool>("enchantment.limitless", false);
+    cfg.set("enchantment.limitless", freedom);
+    
+    if(limitless) HookLimitLess();
 }

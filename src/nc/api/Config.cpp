@@ -21,7 +21,7 @@ std::filesystem::path Config::baseDir() const {
     	appPackage = "io.kitsuri.mayape";
     }
     
-    std::string configPath = type_ ? "/sdcard/games/nc_config" : "/sdcard/Android/media/" + appPackage + "/modules/nc_config";
+    std::string configPath = type_ ? "/sdcard/games" : "/sdcard/Android/media/" + appPackage + "/modules";
     
     return std::filesystem::path(configPath);
 }

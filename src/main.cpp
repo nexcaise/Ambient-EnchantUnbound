@@ -84,98 +84,102 @@ int enchantMax(void* self) {
 	return originalVal;
 }
 
+bool vHook(const char* MCPE_LIB, const char* cls, int slot, void* hookFn, void** orig) {
+	return nc::hook::vtable(MCPE_LIB, cls, slot, orig, hookFn);
+}
+
 void HookCostAndMaxVal() {
-	nc::hook::vtable("libminecraftpe.so", "7Enchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min); //MinCost
-	nc::hook::vtable("libminecraftpe.so", "7Enchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max); //MaxCost
-	nc::hook::vtable("libminecraftpe.so", "7Enchant", 6, (void*)enchantMax, (void**)&originMax); //MaxLevel
+	vHook("libminecraftpe.so", "7Enchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min); //MinCost
+	vHook("libminecraftpe.so", "7Enchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max); //MaxCost
+	vHook("libminecraftpe.so", "7Enchant", 6, (void*)enchantMax, (void**)&originMax); //MaxLevel
 	
-	nc::hook::vtable("libminecraftpe.so", "10BowEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "10BowEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "10BowEnchant", 6, (void*)enchantMax, (void**)&originMax);
+	vHook("libminecraftpe.so", "10BowEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "10BowEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "10BowEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "13BreachEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "13BreachEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "13BreachEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "13BreachEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "13BreachEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "13BreachEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "15CrossbowEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "15CrossbowEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "15CrossbowEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "15CrossbowEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "15CrossbowEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "15CrossbowEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "19CurseBindingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "19CurseBindingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "19CurseBindingEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "19CurseBindingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "19CurseBindingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "19CurseBindingEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "21CurseVanishingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "21CurseVanishingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "21CurseVanishingEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "21CurseVanishingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "21CurseVanishingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "21CurseVanishingEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "14DensityEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "14DensityEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "14DensityEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "14DensityEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "14DensityEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "14DensityEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "14DiggingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "14DiggingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "14DiggingEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "14DiggingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "14DiggingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "14DiggingEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "14FishingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "14FishingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "14FishingEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "14FishingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "14FishingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "14FishingEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "18FrostWalkerEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "18FrostWalkerEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "18FrostWalkerEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "18FrostWalkerEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "18FrostWalkerEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "18FrostWalkerEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "11LootEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "11LootEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "11LootEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "11LootEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "11LootEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "11LootEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "12LungeEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "12LungeEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "12LungeEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "12LungeEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "12LungeEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "12LungeEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "18MeleeWeaponEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "18MeleeWeaponEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "18MeleeWeaponEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "18MeleeWeaponEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "18MeleeWeaponEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "18MeleeWeaponEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "14MendingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "14MendingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "14MendingEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "14MendingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "14MendingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "14MendingEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "17ProtectionEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "17ProtectionEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "17ProtectionEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "17ProtectionEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "17ProtectionEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "17ProtectionEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "16SoulSpeedEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "16SoulSpeedEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "16SoulSpeedEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "16SoulSpeedEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "16SoulSpeedEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "16SoulSpeedEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "17SwiftSneakEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "17SwiftSneakEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "17SwiftSneakEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "17SwiftSneakEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "17SwiftSneakEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "17SwiftSneakEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "11SwimEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "11SwimEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "11SwimEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "11SwimEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "11SwimEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "11SwimEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "24TridentChannelingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "24TridentChannelingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "24TridentChannelingEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "24TridentChannelingEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "24TridentChannelingEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "24TridentChannelingEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "21TridentImpalerEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "21TridentImpalerEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "21TridentImpalerEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "21TridentImpalerEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "21TridentImpalerEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "21TridentImpalerEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "21TridentLoyaltyEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "21TridentLoyaltyEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "21TridentLoyaltyEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "21TridentLoyaltyEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "21TridentLoyaltyEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "21TridentLoyaltyEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "21TridentRiptideEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "21TridentRiptideEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "21TridentRiptideEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "21TridentRiptideEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "21TridentRiptideEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "21TridentRiptideEnchant", 6, (void*)enchantMax, (void**)&originMax);
     
-    nc::hook::vtable("libminecraftpe.so", "16WindBurstEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
-    nc::hook::vtable("libminecraftpe.so", "16WindBurstEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
-    nc::hook::vtable("libminecraftpe.so", "16WindBurstEnchant", 6, (void*)enchantMax, (void**)&originMax);
+    vHook("libminecraftpe.so", "16WindBurstEnchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min);
+    vHook("libminecraftpe.so", "16WindBurstEnchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max);
+    vHook("libminecraftpe.so", "16WindBurstEnchant", 6, (void*)enchantMax, (void**)&originMax);
 }
 
 void HookCompatible() {

@@ -39,10 +39,10 @@ jobs:
           mkdir -p libs/arm64-v8a
           mkdir -p include
 
-      - name: Download libnexcaiseAPI.a
+      - name: Download libnexcaiseAPI.so
         run: |
-          curl -L -o libs/arm64-v8a/libnexcaiseAPI.a \
-          "https://www.nexcaise.my.id/api/git/releases/download?owner=nexcaise&repo=nexcaiseAPI&tag=${{ steps.get_version.outputs.version }}&asset=libnexcaiseAPI.a"
+          curl -L -o libs/arm64-v8a/libnexcaiseAPI.so \
+          "https://www.nexcaise.my.id/api/git/releases/download?owner=nexcaise&repo=nexcaiseAPI&tag=${{ steps.get_version.outputs.version }}&asset=libnexcaiseAPI.so"
 
       - name: Download include.zip
         run: |

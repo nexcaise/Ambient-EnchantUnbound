@@ -28,32 +28,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq unzip
 
-      - name: Get latest version
-        id: get_version
-        run: |
-          VERSION=$(curl -s "https://www.nexcaise.my.id/api/git/releases?owner=nexcaise&repo=nexcaiseAPI" | jq -r '.[0].tag_name')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Prepare directories
-        run: |
-          mkdir -p libs/arm64-v8a
-          mkdir -p include
-
-      - name: Download libnexcaiseAPI.so
-        run: |
-          curl -L -o libs/arm64-v8a/libnexcaiseAPI.so \
-          "https://www.nexcaise.my.id/api/git/releases/download?owner=nexcaise&repo=nexcaiseAPI&tag=${{ steps.get_version.outputs.version }}&asset=libnexcaiseAPI.so"
-
-      - name: Download include.zip
-        run: |
-          curl -L -o include.zip \
-          "https://www.nexcaise.my.id/api/git/releases/download?owner=nexcaise&repo=nexcaiseAPI&tag=${{ steps.get_version.outputs.version }}&asset=include.zip"
-
-      - name: Extract include.zip
-        run: |
-          unzip -o include.zip -d include
-          rm include.zip
-
       - name: Configure and Build
         run: |
           xmake f -p android -a arm64-v8a --ndk=$ANDROID_NDK_HOME -m release -y

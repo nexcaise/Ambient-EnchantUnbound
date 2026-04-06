@@ -68,20 +68,20 @@ int enchantCost_min(void* self, int level) {
 	int originalVal = origin_ec_min(self, level);
 	logger_eu->i("Level Min Enchant = {}", level);
 	logger_eu->i("Cost Min Enchant = {}", originalVal);
-	return originVal;
+	return originalVal;
 }
 
 int enchantCost_max(void* self, int level) {
 	int originalVal = origin_ec_max(self, level);
 	logger_eu->i("Level Max Enchant = {}", level);
 	logger_eu->i("Cost Max Enchant = {}", originalVal);
-	return originVal;
+	return originalVal;
 }
 
 int enchantMax(void* self) {
 	int originalVal = originMax(self);
 	logger_eu->i("Max Enchant = {}", originalVal);
-	return originVal;
+	return originalVal;
 }
 
 void HookCostAndMaxVal() {

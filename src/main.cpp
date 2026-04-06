@@ -63,20 +63,20 @@ int enchantCost_min(void* self, int level) {
 	int originalVal = origin_ec_min(self, level);
 	//logger_eu->i("Level Min Enchant = {}", level);
 	//logger_eu->i("Cost Min Enchant = {}", originalVal);
-	return originalVal;
+	return 0;
 }
 
 int enchantCost_max(void* self, int level) {
 	int originalVal = origin_ec_max(self, level);
 	//logger_eu->i("Level Max Enchant = {}", level);
 	//logger_eu->i("Cost Max Enchant = {}", originalVal);
-	return originalVal;
+	return 0;
 }
 
 int enchantMax(void* self) {
 	int originalVal = originMax(self);
 	//logger_eu->i("Max Enchant = {}", originalVal);
-	return originalVal;
+	return 255;
 }
 
 bool vHook(const char* MCPE_LIB, const char* cls, int slot, void* hookFn, void** orig) {
@@ -205,9 +205,29 @@ void HookCompatible() {
         g_CompatibilityIDOffset = ((*(uint32_t*)func >> 10) & 0xFFF) * 4;
         Redirect("14MendingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     }
+    
+    Redirect("16SoulSpeedEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("17SwiftSneakEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("11SwimEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("24TridentChannelingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("21TridentImpalerEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("21TridentLoyaltyEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("21TridentRiptideEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("16WindBurstEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("10BowEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("7Enchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("13BreachEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     Redirect("15CrossbowEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("19CurseBindingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("21CurseVanishingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("14DensityEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("14DiggingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("14FishingEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("18FrostWalkerEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("11LootEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("12LungeEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("18MeleeWeaponEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
+    Redirect("17ProtectionEnchant", {2}, (uintptr_t)Enchant_isCompatibleWith);
     //logger_eu->i("redirected %d vtable references", replaced);
 }
 

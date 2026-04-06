@@ -9,7 +9,7 @@
 auto logger_eu = nc::Logger::getOrCreate("EnchantUnbound");
 
 Config& getConfig() {
-    static Config cfg("EnchantUnbound", true);
+    static Config cfg("EnchantUnbound", false);
     return cfg;
 }
 

@@ -66,11 +66,20 @@ int enchantMax(void* self) {
 	return level;
 }
 
+static short (*origin_height)(void*) = nullptr;
+
+short getCloudHeight(void* Dimension) {
+	return 0;
+};
+
 NAPI bool vHook(const char* MCPE_LIB, const char* cls, int slot, void* hookFn, void** orig) {
 	return nc::hook::vtable(MCPE_LIB, cls, slot, orig, hookFn);
 }
 
 NAPI void HookCostAndMaxVal() {
+	vHook("libminecraftpe.so", "18OverworldDimension", 13, (void*)getCloudHeight, (void**)&origin_height);
+	vHook("libminecraftpe.so", "9Dimension", 13, (void*)getCloudHeight, (void**)&origin_height);
+	
 	vHook("libminecraftpe.so", "7Enchant", 3, (void*)enchantCost_min, (void**)&origin_ec_min); //MinCost
 	vHook("libminecraftpe.so", "7Enchant", 4, (void*)enchantCost_max, (void**)&origin_ec_max); //MaxCost
 	vHook("libminecraftpe.so", "7Enchant", 6, (void*)enchantMax, (void**)&originMax); //MaxLevel

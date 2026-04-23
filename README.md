@@ -39,7 +39,7 @@ change the enchantment.freedom to true
 
 ## ⚙️ Requirements
 
-- 🚀 [LeviLauncher](https://github.com/LiteLDev/LeviLaunchroid)
+- 🚀 [Ambient](https://ambient.kitsuri.dev)
 
 ## 🛠️ Installation
 
@@ -48,4 +48,5 @@ change the enchantment.freedom to true
 - Launch Minecraft with the mod activated
 
 ## 📜 License
-- This project is licensed under the GNU LGPL v3.0.
+- This project is licensed under All Rights Reserved.
+- Originally Made By [TANGY009](https://github.com/Tangy009)
